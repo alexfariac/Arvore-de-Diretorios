@@ -10,17 +10,17 @@ typedef struct arrdir{
 }TAD;
 
 typedef struct dir{
-	char[50] nome;
-	const time_t criacao = time(NULL);
+	char nome[50] ;
+	const time_t criacao ;
 	int permissoes;
 	int num_arq;
 }TDIR;
 
 typedef struct arq{
-	char[50] nome;
+	char nome[50] ;
 	int tipo; //Texto ou Binario
 	int permissoes;
-	const time_t criacao = time(NULL);
+	const time_t criacao;
 	time_t ult_att;
 };
 
