@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 	do{
 		//Receber o comando do usuario pelo menos uma vez
 		printf("Digite um dos comandos listados: \n");
-		printf("0 - Sair ");
+		printf("0 - Sair \n");
 		
 		scanf("%d", &comando);
 		

@@ -11,22 +11,23 @@
 
 	typedef struct dir{	
 		char * nome; 
-		const time_t criacao = time(NULL);
+		const time_t criacao ;
 		int perm;
-		int num_arq = 0;
+		int num_arq;
 	}TDIR;
 
 	typedef struct arq{
 		char * nome; // = (char *) malloc (sizeof (char * 25)
 		int tipo; //Texto ou Binario
 		int perm;
-		const time_t criacao = time(NULL);
+		const time_t criacao ;
 		char * ult_att;
 	}TARQ;
 
 
 //METODOS SOBRE A ARVORE.
 
+	//TODO
 	TAD * aloca_no (char* nome ,int tipo, int permissao){
 		TAD * novo = (TAD *) malloc (sizeof (TAD) );
 		novo->tipo = tipo;
@@ -35,15 +36,35 @@
 		return novo;
 	}
 	
+	void insere( TAD * pai, TAD * filho){
+		filho-> prox_irmao = pai->filho;
+		pai-> filho = filho;
+	}
+	
+	void libera(TAD * a){
+		if(a->prox_irmao) libera(a->prox_irmao);
+		if(a->filho) libera(a->filho);
+		//Libera primeiro a referencia para os tipos arquivo ou diretorio.
+		free(a->info);
+		free(a);
+	}
+	
+	
 //METODOS SOBRE ARQUIVOS E DIRETORIOS.
 
 //METODOS SOBRE DIRETORIO.
+
+	/*
 	TDIR * aloca_dir(char* nome, int permissao){
 		TDIR * novo = (TDIR *)malloc (sizeof(TDIR));
 		novo->nome = nome;
 		novo->perm = permissao;
 	}
+	*/
+	
 //METODOS SOBRE ARQUIVOS.
+
+	/*
 	TARQ * aloca_arq(char* nome, int permissao){
 		TARQ * novo = (TARQ *) malloc (sizeof(TARQ));
 		novo->nome = nome;
@@ -51,3 +72,4 @@
 		
 		return novo;
 	}
+	*/
