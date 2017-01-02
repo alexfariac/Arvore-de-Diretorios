@@ -4,43 +4,48 @@
 
 //DEFINIÇÃO DOS TIPOS.
 	typedef struct arrdir{
-		int tipo; //Tipo Arquivo==1 Tipo Diretorio==0
-		struct arrdir *filho, *prox_irmao;
+        struct arrdir *filho, *prox_irmao;
+        char * nome; // = (char *) malloc (sizeof (char * 25)
+		int eh_diretorio; //Tipo Arquivo==1 Tipo Diretorio==0
+		time_t criacao;
+		time_t ult_mod;
+        int perm;
 		void *info;
 	}TAD;
 
-	typedef struct dir{	
-		char * nome; 
-		const time_t criacao ;
-		int perm;
-		int num_arq;
+	typedef struct dir{
+		int num_arq; //numero de arquivos/diretorios abaixo dele
 	}TDIR;
 
 	typedef struct arq{
-		char * nome; // = (char *) malloc (sizeof (char * 25)
-		int tipo; //Texto ou Binario
-		int perm;
-		const time_t criacao ;
-		char * ult_att;
+		int eh_binario;
 	}TARQ;
 
 
 //METODOS SOBRE A ARVORE.
 
 	//TODO
-	TAD * aloca_no (char* nome ,int tipo, int permissao){
-		TAD * novo = (TAD *) malloc (sizeof (TAD) );
-		novo->tipo = tipo;
-		novo->filho = novo->prox_irmao = NULL;
+	TAD * cria_no (char* nome ,int eh_dir, int perm, void *info){
+		TAD * novo = (TAD *) malloc (sizeof (TAD));
+		novo->prox_irmao = NULL;
+		novo->filho = NULL;
+		novo->nome = nome;
+		novo->eh_diretorio = eh_dir;
+		novo->criacao = time(NULL);
+		novo->ult_mod = novo->criacao;
+		novo->perm = perm;
+		novo->info = info;
 		//Refenciar a info
 		return novo;
 	}
-	
-	void insere( TAD * pai, TAD * filho){
-		filho-> prox_irmao = pai->filho;
-		pai-> filho = filho;
+
+	void insere(TAD * pai, TAD * filho){ // insere o filho embaixo do pai
+		if(pai->eh_diretorio){
+            filho->prox_irmao = pai->filho;
+            pai->filho = filho;
+        }
 	}
-	
+
 	void libera(TAD * a){
 		if(a->prox_irmao) libera(a->prox_irmao);
 		if(a->filho) libera(a->filho);
@@ -48,28 +53,22 @@
 		free(a->info);
 		free(a);
 	}
-	
-	
+
+
 //METODOS SOBRE ARQUIVOS E DIRETORIOS.
 
 //METODOS SOBRE DIRETORIO.
 
-	/*
-	TDIR * aloca_dir(char* nome, int permissao){
-		TDIR * novo = (TDIR *)malloc (sizeof(TDIR));
-		novo->nome = nome;
-		novo->perm = permissao;
-	}
-	*/
-	
-//METODOS SOBRE ARQUIVOS.
-
-	/*
-	TARQ * aloca_arq(char* nome, int permissao){
-		TARQ * novo = (TARQ *) malloc (sizeof(TARQ));
-		novo->nome = nome;
-		novo->perm = permissao;
-		
+	TDIR * cria_dir(){
+		TDIR *novo = (TDIR *)malloc (sizeof(TDIR));
+		novo->num_arq = 0;
 		return novo;
 	}
-	*/
+
+//METODOS SOBRE ARQUIVOS.
+
+	TARQ * cria_arq(int eh_bin){
+		TARQ * novo = (TARQ *) malloc (sizeof(TARQ));
+        novo->eh_binario = eh_bin;
+		return novo;
+	}
