@@ -41,10 +41,12 @@
 		return novo;
 	}
 
-	void insere(TAD * pai, TAD * filho){ // insere o filho embaixo do pai
+	void insere_filho(TAD * pai, TAD * filho){ // insere o filho embaixo do pai
 		if(pai->eh_diretorio){
             filho->prox_irmao = pai->filho;
             pai->filho = filho;
+            TDIR *dir = (TDIR *)pai->info;
+            dir->num_arq++;
         }
 	}
 
@@ -112,38 +114,45 @@ void cria_geral(TAD *pai, int eh_dir){
         printf("1 - Binário \n");
         printf("0 - Textual \n");
         int eh_bin;
-        scanf("%d", &eh_bin);
+        scanf(" %d", &eh_bin);
         printf("Qual o tamanho do Arquivo que deseja criar? \n");
         int tam;
-        scanf("%d", &tam);
+        getchar();
+        scanf(" %d", &tam);
+        getchar();
         info = cria_arq(eh_bin, tam);
         nome_ph = "Arquivo";
     }
-    printf("Qual o nome que gostaria de dar para o seu %s? \n", nome_ph);
-    char *nome;
-    scanf("%s", nome);
 
-    printf("Quais as permissões que gostaria dar ao seu %s? \n Use o sistema de permissões do linux. \n", nome_ph);
-    char *perm;
-    scanf("%s", perm);
+    printf("Qual o nome que gostaria de dar para o seu %s?\n", nome_ph);
+    char nome [255];
+    fgets(nome, 255, stdin);
+
+    printf("Quais as permissões que gostaria dar ao seu %s?\nUse o sistema de permissões do linux.\n", nome_ph);
+    char perm[255];
+    getchar();
+    fgets(perm, 255, stdin);
 
     TAD *novo = cria_no(nome, eh_dir, perm, info);
-    insere(pai, novo);
+    insere_filho(pai, novo);
+
+    printf("%s criado com sucesso! \n\n", nome_ph);
 }
 
 void transforma(TAD *raiz, TAD *a){
     if(a != raiz){
         if(a->eh_diretorio){
-            printf("Prezado usuário, deseja transformar seu Diretório em um Arquivo binário ou textual? \n");
+            printf("Prezado usuário, deseja transformar seu Diretório em um Arquivo binário ou textual?\n");
             printf("1 - Binário \n");
             printf("0 - Textual \n");
             int eh_bin;
-            scanf("%d", &eh_bin);
+            scanf(" %d", &eh_bin);
             printf("Qual o tamanho do Arquivo que deseja criar? \n");
             int tam;
-            scanf("%d", &tam);
+            scanf(" %d", &tam);
             TARQ *info = cria_arq(eh_bin, tam);
             libera(a->filho);
+            a->filho = NULL;
             a->info = info;
             a->eh_diretorio = 0;
             a->ult_mod = time(NULL);
@@ -161,5 +170,23 @@ void transforma(TAD *raiz, TAD *a){
     }
     else printf("Erro: Impossível transformar raíz em arquivo. \n");
 }
+/*
+void imprime(TAD *a, char *divisor){ // divisor eh um - para demonstar a diferenca entre um pai e um filho
+    if(!a) return;
+    TAD *p = a;
+    while(p){
+        printf("%s %s \n", divisor, p->nome);
+        TAD *q = p->filho;
+        char *aux = divisor;
+        strcat(divisor, "-");
+        imprime(q, divisor);
+        divisor = aux;
+        p = p->prox_irmao;
+    }
+}*/
 
-
+void imprime(TAD *a){
+  printf("- %s\n", a->nome);
+  TAD *q = a->filho;
+  for(;q;q=q->prox_irmao) imprime(q);
+}
